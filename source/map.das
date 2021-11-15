@@ -246,3 +246,18 @@ def find_path(map: Map; start, end: int2) : array<int2>
     push(path, start)
     return <- path
         
+def random_border_cell_coordinates(map: Map)
+    var index = random_int_in_range(0, map.width * 2 + (map.height - 2) * 2)
+    if index < map.width
+        return int2(index, 0)
+    index -= map.width
+    if index < map.width
+        return int2(index, map.height - 1)
+    index -= map.width
+    if index < map.height - 2
+        return int2(0, index + 1)
+    index -= map.height - 2
+    return int2(map.width - 1, index + 1)
+
+def cell_is_occupied(coordinates: int2)
+    return false

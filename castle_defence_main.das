@@ -3,7 +3,7 @@ require daslib/decs_boost
 require source/global
 require source/misc
 require source/map
-require source/entities
+require source/game
 require source/rendering
 
 [export]
