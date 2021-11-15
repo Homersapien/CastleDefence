@@ -20,7 +20,7 @@ def spawn_wave(count: int)
         spawn_actor(
             cell_world_center(map, cell),
             0.5,
-            1.0 * 3.0,
+            1.0,
             100.0,
             [[
                 Weapon
