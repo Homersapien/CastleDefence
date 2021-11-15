@@ -4,13 +4,17 @@ require map
 require actor
 require battle
 require game_result
+require input
 
 let
     ATTACK_AMPLITUDE_MULTIPLIER = 1.0
     ATTACK_DURATION = 0.25
     HEALTH_BAR_WIDTH = 0.8
     HEALTH_BAR_HEIGHT = 0.2
+    GAME_RESULTS_OVERLAY_COLOR = 0x40000000
     GAME_RESULT_FONT_SIZE = 40
+    CURSOR_WIDTH = 0.1
+    CURSOR_COLOR = 0xFFDDCC55 
 
 let GROUND_COLORS = [[uint[]
     0x33BB33;
@@ -25,9 +29,7 @@ let FACTION_COLORS = [[uint[]
     0xFF5533
 ]]
 
-let
-    BORDER_COLOR = 0x20000000
-    GAME_RESULTS_OVERLAY_COLOR = 0x40000000
+let BORDER_COLOR = 0x20000000
 
 [export]
 def reset_camera(var map: Map)
@@ -128,3 +130,36 @@ def draw_health(actor: Actor; health: Health)
             HEALTH_BAR_WIDTH * saturate(health.value / health.max_value),
             HEALTH_BAR_HEIGHT,
             FACTION_COLORS[int(actor.faction)])
+
+[decs(stage = draw)]
+def draw_cursor(cursor: PlayerCursor)
+    let cursor_origin = cell_world_origin(map, cursor.cell)
+    let line_width = CURSOR_WIDTH * map.cell_size
+    
+    fill_rect(
+        cursor_origin.x,
+        cursor_origin.y,
+        line_width,
+        map.cell_size,
+        CURSOR_COLOR)
+
+    fill_rect(
+        cursor_origin.x,
+        cursor_origin.y,
+        map.cell_size,
+        line_width,
+        CURSOR_COLOR)
+
+    fill_rect(
+        cursor_origin.x + map.cell_size - line_width,
+        cursor_origin.y,
+        line_width,
+        map.cell_size,
+        CURSOR_COLOR)
+
+    fill_rect(
+        cursor_origin.x,
+        cursor_origin.y + map.cell_size - line_width,
+        map.cell_size,
+        line_width,
+        CURSOR_COLOR)

@@ -6,6 +6,7 @@ require source/spawning
 require source/actor
 require source/rendering
 require source/game_result
+require source/input
 
 [export]
 def initialize
@@ -16,12 +17,14 @@ def initialize
     restart_game()
 
 def restart_game
+    restart()
     reset_game_result()
     for id in actors_ids
         delete_entity(id)
     generate_map(map)
     spawn_keep(cell_world_center(map, map.keep_coordinates), 0.8, 500.0)
     spawn_wave(7)
+    initialize_input()
 
 let THINKING_PERIOD = 0.2
 var time_since_last_thinking : float = 0.0
@@ -29,6 +32,8 @@ var time_since_last_thinking : float = 0.0
 [export]
 def act(delta_time: float)
     
+    decs_stage("input")
+
     time_since_last_thinking += delta_time
     if (time_since_last_thinking >= THINKING_PERIOD)
         time_since_last_thinking -= THINKING_PERIOD

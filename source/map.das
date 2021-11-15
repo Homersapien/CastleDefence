@@ -49,8 +49,11 @@ def cell_index(map: Map; x, y: int)
 def cell_index(map: Map; coordinate: int2)
     return coordinate.x + map.width * coordinate.y
 
-def cell_coordinate_is_valid(map: Map; coordinate: int2) : bool
-    return coordinate.x >= 0 && coordinate.y >= 0 && coordinate.x < map.width && coordinate.y < map.height
+def cell_coordinate_is_valid(map: Map; coordinates: int2) : bool
+    return coordinates.x >= 0 && coordinates.y >= 0 && coordinates.x < map.width && coordinates.y < map.height
+
+def clamp_cell_coordinates(map: Map; coordinates: int2) : int2
+    return clamp(coordinates, int2(0, 0), int2(map.width - 1, map.height - 1))
 
 def cell_coordinates(map: Map; index: int) : int2
     return int2(index % map.width, index / map.width)
