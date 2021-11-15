@@ -1,7 +1,6 @@
 require math
 require daslib/media
 require daslib/decs_boost
-require global
 require misc
 require map
 require actor
@@ -17,11 +16,26 @@ def spawn_wave(count: int)
         while cell_is_occupied(cell) && attempt < max_attempts
             ++attempt
             cell = random_border_cell_coordinates(map)
-        spawn_actor(cell_world_center(map, cell), 0.5, 1.0, 100.0)
+        
+        spawn_actor(
+            cell_world_center(map, cell),
+            0.5,
+            1.0 * 3.0,
+            100.0,
+            [[
+                Weapon
+                attack_range = 1.0,
+                damage = 25.0,
+                rate = 1.0
+            ]])
 
-def spawn_actor(position: float2; size: float; speed: float; health: float)
+def spawn_actor(position: float2; size: float; speed: float; health: float; var weapon: Weapon)
+    
     let cell_coordinates = world_position_cell_coordinates(map, position)
     find_path_to_keep_once(map, cell_coordinates)
+
+    weapon.attack_period = weapon.rate > 0.0 ? 1.0 / weapon.rate : FLT_MAX
+    
     var entity_id = create_entity <| @ ( eid, cmp )
         cmp |> set ( "eid", eid )
         apply_decs_template(cmp, [[Actor
@@ -43,11 +57,12 @@ def spawn_actor(position: float2; size: float; speed: float; health: float)
             value = health,
             max_value = health
         ]])
+        apply_decs_template(cmp, weapon)
     push(actors_ids, entity_id)
 
 def spawn_keep(position: float2; size: float; health: float)
     var entity_id = create_entity <| @ ( eid, cmp )
-        cmp |> set ( "eid", eid )
+        cmp |> set ("eid", eid)
         apply_decs_template(cmp, [[Actor
             position = position,
             size = size,

@@ -25,3 +25,11 @@ def random_float
 def nonzero_sign(vector: int2) : int2
     let s = sign(vector)
     return int2(s.x != 0 ? s.x : 1, s.y != 0 ? s.y : 1)
+    
+[export]
+def remap(value, min1, max1, min2, max2: float)
+    return clamp((value - min1) / (max1 - min1) * (max2 - min2) + min2, min2, max2)
+
+[export]
+def remap01(value, min1, max1: float)
+    return saturate((value - min1) / (max1 - min1))

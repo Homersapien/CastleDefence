@@ -1,10 +1,11 @@
 require daslib/media
 require daslib/decs_boost
-require source/global
 require source/misc
 require source/map
-require source/game
+require source/spawning
+require source/actor
 require source/rendering
+require source/game_result
 
 [export]
 def initialize
@@ -15,10 +16,11 @@ def initialize
     restart_game()
 
 def restart_game
+    reset_game_result()
     for id in actors_ids
         delete_entity(id)
     generate_map(map)
-    spawn_keep(cell_world_center(map, map.keep_coordinates), 0.8, 1000.0)
+    spawn_keep(cell_world_center(map, map.keep_coordinates), 0.8, 500.0)
     spawn_wave(7)
 
 let THINKING_PERIOD = 0.2
@@ -33,7 +35,8 @@ def act(delta_time: float)
         decs_stage("thinking")
 
     decs_stage("movement")
-
+    decs_stage("fighting")
+    
     if get_key(VK_END)
         restart_game()
 
@@ -44,4 +47,5 @@ def act(delta_time: float)
 def draw
     render_map(map)
     decs_stage("draw")
+    render_ui()
     return

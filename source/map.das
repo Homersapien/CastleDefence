@@ -10,6 +10,8 @@ let
     ROCKS_AMOUNT = 0.3
     FOREST_AMOUNT = 0.3
 
+var map : Map
+
 enum GroundType
     Grass
     Forest

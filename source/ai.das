@@ -1,7 +1,6 @@
 require math
 require daslib/media
 require daslib/decs_boost
-require global
 require misc
 require map
 require actor
@@ -16,7 +15,6 @@ struct Behavior
     state: BehaviorState
     start_cell_index: int
     path_step: int = 0
-    attacked_entity_id: EntityId
 
 def try_find_attackable_enemy(actor_id: EntityId; actor_faction: Faction; actor_cell: int2; var found_id: EntityId) : bool
     if try_find_attackable_enemy_in_single_cell(actor_id, actor_faction, actor_cell, found_id)
@@ -43,28 +41,16 @@ def try_find_attackable_enemy_in_single_cell(actor_id: EntityId; actor_faction: 
     return false
 
 [decs(stage = thinking)]
-def think(eid: EntityId; actor: Actor; var behavior: Behavior; var movement: Movement)
+def think(eid: EntityId; var actor: Actor; var behavior: Behavior; var movement: Movement)
     
-    // Damaging not implemented yet
-    /*if behavior.state == BehaviorState Fighting
-        let target_found = query(behavior.attacked_entity_id) <| $ (health: Health)
-            var _ = 1
-        if target_found
-            return*/
+    if behavior.state == BehaviorState Fighting && actor.attacked_entity_id != INVALID_ENTITY_ID
+        return
 
     let current_cell_coordinates = world_position_cell_coordinates(map, actor.position)
     var attackable_enemy_id : EntityId
     if try_find_attackable_enemy(eid, actor.faction, current_cell_coordinates, attackable_enemy_id)
         behavior.state = BehaviorState Fighting
-        behavior.attacked_entity_id = attackable_enemy_id
-        
-        // Damaging not implemented yet, this code is for debugging purposes
-        // (by the way, it causes a crash after the keep is deleted)
-        query(attackable_enemy_id) <| $ (killed_actor: Actor)
-            on_entity_left_cell(attackable_enemy_id, cell_index(map, world_position_cell_coordinates(map, killed_actor.position)))
-            delete_entity(attackable_enemy_id)
-            behavior.attacked_entity_id = INVALID_ENTITY_ID
-            behavior.state = BehaviorState Walking
+        actor.attacked_entity_id = attackable_enemy_id
 
     behavior.state = BehaviorState Walking
     let path_length = length(map.cells[behavior.start_cell_index].path_to_keep)
