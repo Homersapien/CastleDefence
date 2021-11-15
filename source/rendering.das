@@ -1,7 +1,7 @@
 require daslib/media
 require daslib/decs_boost
 require map
-require entities
+require actor
 
 let GROUND_COLORS = [[uint[]
     0x33BB33;

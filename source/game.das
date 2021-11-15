@@ -4,7 +4,7 @@ require daslib/decs_boost
 require global
 require misc
 require map
-require entities
+require actor
 require ai
 require movement
 require battle

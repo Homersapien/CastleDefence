@@ -4,7 +4,7 @@ require daslib/decs_boost
 require global
 require misc
 require map
-require entities
+require actor
 
 [decs_template]
 struct Movement
