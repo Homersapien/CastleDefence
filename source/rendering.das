@@ -3,6 +3,7 @@ require daslib/decs_boost
 require map
 require actor
 require battle
+require building
 require game_result
 require input
 
@@ -14,7 +15,9 @@ let
     GAME_RESULTS_OVERLAY_COLOR = 0x40000000
     GAME_RESULT_FONT_SIZE = 40
     CURSOR_WIDTH = 0.1
-    CURSOR_COLOR = 0xFFDDCC55 
+    CURSOR_COLOR = 0xFFDDCC55
+    BORDER_COLOR = 0x20000000
+    BUILDING_GROUND_COLOR = 0x776655
 
 let GROUND_COLORS = [[uint[]
     0x33BB33;
@@ -28,8 +31,6 @@ let FACTION_COLORS = [[uint[]
     0x3355FF;
     0xFF5533
 ]]
-
-let BORDER_COLOR = 0x20000000
 
 [export]
 def reset_camera(var map: Map)
@@ -97,7 +98,17 @@ def render_ui
             FACTION_COLORS[1])
 
 [decs(stage = draw)]
-def draw_actor(actor: Actor; weapon: Weapon)
+def draw_building(actor: Actor; building: Building)
+
+    fill_rect(
+        actor.position.x - map.cell_size * 0.5,
+        actor.position.y - map.cell_size * 0.5,
+        map.cell_size,
+        map.cell_size,
+        BUILDING_GROUND_COLOR)
+
+[decs(stage = draw)]
+def draw_melee_fighter(actor: Actor; weapon: MeleeWeapon)
     
     var attack_offset = float2(0.0)
 

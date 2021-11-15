@@ -23,13 +23,13 @@ def spawn_wave(count: int)
             1.0,
             100.0,
             [[
-                Weapon
+                MeleeWeapon
                 attack_range = 1.0,
                 damage = 25.0,
                 rate = 1.0
             ]])
 
-def spawn_actor(position: float2; size: float; speed: float; health: float; var weapon: Weapon)
+def spawn_actor(position: float2; size: float; speed: float; health: float; var weapon: MeleeWeapon)
     
     let cell_coordinates = world_position_cell_coordinates(map, position)
     find_path_to_keep_once(map, cell_coordinates)
@@ -73,4 +73,5 @@ def spawn_keep(position: float2; size: float; health: float)
             max_value = health
         ]])
     keep_id = entity_id
-    push(map.cells[cell_index(map, world_position_cell_coordinates(map, position))].entitity_ids, entity_id)
+
+    on_entity_entered_cell(entity_id, position)

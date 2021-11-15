@@ -13,7 +13,7 @@ struct Health
     max_value: float
 
 [decs_template]
-struct Weapon
+struct MeleeWeapon
     attack_range: float
     damage: float
     rate: float
@@ -22,7 +22,7 @@ struct Weapon
     attack_direction: float2
 
 [decs(stage = fighting)]
-def fight(eid: EntityId; var actor: Actor; var weapon: Weapon)
+def fight_melee(eid: EntityId; var actor: Actor; var weapon: MeleeWeapon)
 
     if actor.attacked_entity_id != INVALID_ENTITY_ID
 

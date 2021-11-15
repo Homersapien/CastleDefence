@@ -4,6 +4,7 @@ require source/misc
 require source/map
 require source/spawning
 require source/actor
+require source/building
 require source/rendering
 require source/game_result
 require source/input
@@ -25,6 +26,7 @@ def restart_game
     spawn_keep(cell_world_center(map, map.keep_coordinates), 0.8, 500.0)
     spawn_wave(7)
     initialize_input()
+    reset_building()
 
 let THINKING_PERIOD = 0.2
 var time_since_last_thinking : float = 0.0

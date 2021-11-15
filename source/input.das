@@ -2,6 +2,7 @@ require daslib/media
 require daslib/decs_boost
 require misc
 require map
+require building
 
 [decs_template]
 struct PlayerCursor
@@ -15,6 +16,7 @@ def initialize_input()
 
 [decs(stage = input)]
 def process_input(var cursor: PlayerCursor)
+    
     var offset = int2(0, 0)
     if get_key_press(VK_UP) || get_key_down(VK_W)
         offset.y -= 1
@@ -26,3 +28,15 @@ def process_input(var cursor: PlayerCursor)
         offset.x += 1
     
     cursor.cell = clamp_cell_coordinates(map, cursor.cell + offset)
+
+    if get_key_down(VK_1)
+        build_farm(cursor.cell)
+
+    if get_key_down(VK_2)
+        build_wall(cursor.cell)
+
+    if get_key_down(VK_3)
+        build_archer_tower(cursor.cell)
+
+    if get_key_down(VK_0)
+        deconstruct_building(cursor.cell)

@@ -265,4 +265,16 @@ def random_border_cell_coordinates(map: Map)
     return int2(map.width - 1, index + 1)
 
 def cell_is_occupied(coordinates: int2)
-    return false
+    return length(map.cells[cell_index(map, coordinates)].entitity_ids) > 0
+
+def on_entity_entered_cell(entity_id: EntityId; world_position: float2)
+    var cell = world_position_cell_coordinates(map, world_position)
+    push(map.cells[cell_index(map, cell)].entitity_ids, entity_id)
+
+def on_entity_entered_cell(entity_id: EntityId; cell_index: int)
+    push(map.cells[cell_index].entitity_ids, entity_id)
+
+def on_entity_left_cell(entity_id: EntityId; cell_index: int)
+    let index = find_index(map.cells[cell_index].entitity_ids, entity_id)
+    if index >= 0
+        erase(map.cells[cell_index].entitity_ids, index)

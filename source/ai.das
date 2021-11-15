@@ -46,16 +46,25 @@ def think(eid: EntityId; var actor: Actor; var behavior: Behavior; var movement:
     if behavior.state == BehaviorState Fighting && actor.attacked_entity_id != INVALID_ENTITY_ID
         return
 
+    var path_to_keep& = map.cells[behavior.start_cell_index].path_to_keep
+    let path_length = length(path_to_keep)
+
     let current_cell_coordinates = world_position_cell_coordinates(map, actor.position)
     var attackable_enemy_id : EntityId
     if try_find_attackable_enemy(eid, actor.faction, current_cell_coordinates, attackable_enemy_id)
         behavior.state = BehaviorState Fighting
         actor.attacked_entity_id = attackable_enemy_id
+        movement.target_position = actor.position
+        movement.velocity = float2(0.0, 0.0)
+        return
+    else
+        actor.attacked_entity_id = INVALID_ENTITY_ID
+        let next_target_cell = path_to_keep[path_length - behavior.path_step - 1]
+        movement.target_position = cell_world_center(map, next_target_cell)
 
     behavior.state = BehaviorState Walking
-    let path_length = length(map.cells[behavior.start_cell_index].path_to_keep)
     if behavior.path_step + 1 < path_length - 1
         if current_cell_coordinates == world_position_cell_coordinates(map, movement.target_position)
             ++behavior.path_step
-            var next_target_cell = map.cells[behavior.start_cell_index].path_to_keep[path_length - behavior.path_step - 1]
+            let next_target_cell = path_to_keep[path_length - behavior.path_step - 1]
             movement.target_position = cell_world_center(map, next_target_cell)
