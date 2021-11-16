@@ -36,6 +36,10 @@ def remap01(value, min1, max1: float)
 
 [export]
 def move_to(from, to: float2; delta_time: float; speed: float)
-    return float2(
-        move_to(from.x, to.x, delta_time, speed),
-        move_to(from.y, to.y, delta_time, speed))
+    let vector = to - from
+    let distance = length(vector)
+    if distance > 0.0
+        let delta_distance = speed * delta_time
+        return from + (vector / distance) * min(delta_distance, distance)
+    else
+        return to

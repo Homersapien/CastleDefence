@@ -9,7 +9,7 @@ require movement
 require battle
 
 let
-    FIRST_WAVE_DELAY = 5.0
+    FIRST_WAVE_DELAY = 15.0
     WAVES_PERIOD = 30.0
     ENEMIES_PER_WAVE = 5
     NEXT_WAVE_MULTIPLIER = 1.3

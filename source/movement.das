@@ -5,7 +5,7 @@ require misc
 require map
 require actor
 
-let FOREST_MOVEMENT_SPEED_MULTIPLIER = 0.33333
+let FOREST_MOVEMENT_SPEED_MULTIPLIER = 0.2
 
 [decs_template(prefix = "movement_")]
 struct Movement

@@ -4,6 +4,7 @@ require map
 require actor
 require battle
 require building
+require spawning
 require game_result
 require input
 
@@ -11,6 +12,7 @@ let
     INFO_FONT_SIZE = 20
     INFO_MARGIN = 20
     CONTROLS_OFFSET_Y = 40
+    ENEMIES_SPAWNER_INFO_OFFSET_Y = 140
     GOLD_COLOR = 0xEEDD55
     INFO_COLOR = 0xBBBBBB
     ATTACK_AMPLITUDE_MULTIPLIER = 1.0
@@ -85,6 +87,7 @@ def render_map(var map: Map)
                     map.cell_size,
                     map.cell_size,
                     GROUND_COLORS[int(map.cells[cell_index].ground_type)])
+
 [export]
 def render_ui
     
@@ -118,6 +121,7 @@ def render_ui
             INFO_MARGIN + CONTROLS_OFFSET_Y,
             "[1] - Farm ({FARM_COST})\n[2] - Wall ({WALL_COST})\n[3] - Tower ({ARCHER_TOWER_COST})",
             INFO_COLOR)
+        
     else
         // Show the game result if the game is over
         set_font_size(GAME_RESULT_FONT_SIZE)
@@ -127,6 +131,17 @@ def render_ui
             get_screen_height() / 2 + artificial_center_text_offset.y,
             "DEFEAT",
             FACTION_COLORS[1])
+
+[decs(stage = ui)]
+def draw_enemy_spawner_info(spawner: EnemiesSpawner)
+    
+    if game_result == GameResult None
+        set_font_size(INFO_FONT_SIZE)   
+        text_out(
+            INFO_MARGIN,
+            INFO_MARGIN + ENEMIES_SPAWNER_INFO_OFFSET_Y,
+            "Next Wave: {ceili(spawner.time_to_next_wave)}",
+            INFO_COLOR)
 
 [decs(stage = draw)]
 def draw_building(actor: Actor; building: Building)
@@ -188,7 +203,7 @@ def draw_projectile(projectile: Projectile)
         PROJECTILE_SIZE,
         PROJECTILE_COLOR)
 
-[decs(stage = ui)]
+[decs(stage = world_ui)]
 def draw_health(actor: Actor; health: Health)
     if health.value < health.max_value
         
@@ -208,7 +223,7 @@ def draw_health(actor: Actor; health: Health)
             HEALTH_BAR_HEIGHT,
             FACTION_COLORS[int(actor.faction)])
 
-[decs(stage = ui)]
+[decs(stage = world_ui)]
 def draw_cursor(cursor: PlayerCursor)
     let cursor_origin = cell_world_origin(map, cursor.cell)
     let line_width = CURSOR_WIDTH * map.cell_size

@@ -79,11 +79,11 @@ def place_keep(var map: Map)
     map.cells[cell_index].ground_type = GroundType Castle
     
 def place_environment(var map: Map)
-    place_random_ground_of_type(map, GroundType Rock, ROCKS_AMOUNT, ENVIRONMENT_PADDING)
-    place_random_ground_of_type(map, GroundType Forest, FOREST_AMOUNT, ENVIRONMENT_PADDING)
+    place_random_ground_of_type(map, GroundType Rock, ROCKS_AMOUNT, ENVIRONMENT_PADDING, true)
+    place_random_ground_of_type(map, GroundType Forest, FOREST_AMOUNT, ENVIRONMENT_PADDING, false)
     return
 
-def place_random_ground_of_type(var map: Map; ground_type: GroundType; amount: float; padding: int)
+def place_random_ground_of_type(var map: Map; ground_type: GroundType; amount: float; padding: int; clear_passgeway: bool)
     
     let keep_coordinates = map.keep_coordinates
 
@@ -99,10 +99,13 @@ def place_random_ground_of_type(var map: Map; ground_type: GroundType; amount: f
     clear_tiny_ground_cells(map, ground_type, padding)
     clear_tiny_ground_cells(map, ground_type, padding)
 
-    let center_coordinates = int2(map.width, map.height) / 2
-    var passageway_direction = nonzero_sign(center_coordinates - keep_coordinates)
-    clear_passageway(map, keep_coordinates, int2(passageway_direction.x, 0), ground_type)
-    clear_passageway(map, keep_coordinates, int2(0, passageway_direction.y), ground_type)
+    if clear_passgeway
+        let center_coordinates = int2(map.width, map.height) / 2
+        var passageway_direction = nonzero_sign(center_coordinates - keep_coordinates)
+        if random_int_in_range(0,2) == 0
+            clear_passageway(map, keep_coordinates, int2(passageway_direction.x, 0), ground_type)
+        else
+            clear_passageway(map, keep_coordinates, int2(0, passageway_direction.y), ground_type)
 
 def clear_passageway(var map: Map; start; direction: int2; ground_type: GroundType)
     assert(direction != int2(0, 0))

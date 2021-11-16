@@ -54,6 +54,7 @@ def act(delta_time: float)
 def draw
     render_map(map)
     decs_stage("draw")
-    decs_stage("ui")
+    decs_stage("world_ui")
     render_ui()
+    decs_stage("ui")
     return
