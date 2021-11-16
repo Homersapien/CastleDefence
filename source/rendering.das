@@ -110,7 +110,7 @@ def render_ui
         text_out(
             INFO_MARGIN,
             INFO_MARGIN,
-            string(player_gold),
+            "Gold: {player_gold}",
             GOLD_COLOR)
 
         text_out(

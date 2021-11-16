@@ -190,7 +190,7 @@ def estinamed_cost(cell: PathfindingCell) : float
 
 def cell_is_passable(map: Map; coordinates: int2) : bool
     let ground_type = map.cells[cell_index(map, coordinates)].ground_type
-    return ground_type != GroundType Rock && ground_type != GroundType Forest
+    return ground_type != GroundType Rock
 
 def find_path(map: Map; start, end: int2) : array<int2>
     
