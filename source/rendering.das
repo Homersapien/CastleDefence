@@ -8,6 +8,11 @@ require game_result
 require input
 
 let
+    INFO_FONT_SIZE = 20
+    INFO_MARGIN = 20
+    CONTROLS_OFFSET_Y = 40
+    GOLD_COLOR = 0xEEDD55
+    INFO_COLOR = 0xBBBBBB
     ATTACK_AMPLITUDE_MULTIPLIER = 1.0
     ATTACK_DURATION = 0.25
     HEALTH_BAR_WIDTH = 0.8
@@ -15,7 +20,7 @@ let
     GAME_RESULTS_OVERLAY_COLOR = 0x40000000
     GAME_RESULT_FONT_SIZE = 40
     CURSOR_WIDTH = 0.1
-    CURSOR_COLOR = 0xFFDDCC55
+    CURSOR_COLOR = 0xEEDD55
     BORDER_COLOR = 0x20000000
     BUILDING_GROUND_COLOR = 0x776655
 
@@ -77,7 +82,9 @@ def render_map(var map: Map)
                     GROUND_COLORS[int(map.cells[cell_index].ground_type)])
 [export]
 def render_ui
-    if game_result == GameResult Defeat
+    
+    // Draw an overlay if the game is over
+    if game_result != GameResult None
         let map_world_size = map_world_size(map)
         enable_alpha_blend()
         fill_rect(
@@ -88,7 +95,26 @@ def render_ui
             GAME_RESULTS_OVERLAY_COLOR)
         disable_alpha_blend()
 
-        setup_2d_camera(float2(get_screen_width() / 2, get_screen_height() / 2), 1.0)
+    // Reset the camera to render normal UI
+    setup_2d_camera(float2(get_screen_width() / 2, get_screen_height() / 2), 1.0)
+    
+    // Draw the resources and controls
+    if game_result == GameResult None
+
+        set_font_size(INFO_FONT_SIZE)   
+        text_out(
+            INFO_MARGIN,
+            INFO_MARGIN,
+            string(player_gold),
+            GOLD_COLOR)
+
+        text_out(
+            INFO_MARGIN,
+            INFO_MARGIN + CONTROLS_OFFSET_Y,
+            "[1] - Farm ({FARM_COST})\n[2] - Wall ({WALL_COST})\n[3] - Tower ({ARCHER_TOWER_COST})",
+            INFO_COLOR)
+    else
+        // Show the game result if the game is over
         set_font_size(GAME_RESULT_FONT_SIZE)
         let artificial_center_text_offset = int2(-60, -GAME_RESULT_FONT_SIZE / 2)
         text_out(

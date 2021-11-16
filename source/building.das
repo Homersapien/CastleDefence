@@ -20,8 +20,15 @@ var player_gold: int
 [decs_template]
 struct GoldIncome
     period: float
-    amount: float
+    amount: int
     time_to_next_income: float
+
+[decs(stage = fighting)]
+def fight_melee(var income: GoldIncome)
+    income.time_to_next_income -= get_delta_time()
+    if (income.time_to_next_income <= 0.0)
+        income.time_to_next_income += income.period
+        player_gold += income.amount
 
 enum BuildingType
     Keep
@@ -68,7 +75,7 @@ def build_farm(cell: int2)
             ]])
             apply_decs_template(cmp, [[GoldIncome
                 period = 5.0,
-                amount = 1.0,
+                amount = 1,
                 time_to_next_income = 5.0
             ]])
 

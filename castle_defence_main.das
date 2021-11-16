@@ -12,7 +12,6 @@ require source/input
 [export]
 def initialize
     set_window_title("Castle Defence")
-    set_resolution(900, 700)
     initialize_random()
     initialize_map(map, 40, 40, 1.0)
     restart_game()
@@ -41,6 +40,7 @@ def act(delta_time: float)
         time_since_last_thinking -= THINKING_PERIOD
         decs_stage("thinking")
 
+    decs_stage("working")
     decs_stage("movement")
     decs_stage("fighting")
     
