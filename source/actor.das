@@ -10,8 +10,8 @@ var keep_id: EntityId
 enum Faction
     Defenders
     Attackers
-
-[decs_template]
+    
+[decs_template(prefix = "actor_")]
 struct Actor
     position: float2
     size: float

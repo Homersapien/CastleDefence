@@ -27,7 +27,7 @@ def restart_game
     initialize_input()
     reset_building()
 
-let THINKING_PERIOD = 0.2
+let THINKING_PERIOD = 0.1
 var time_since_last_thinking : float = 0.0
 
 [export]
@@ -54,5 +54,6 @@ def act(delta_time: float)
 def draw
     render_map(map)
     decs_stage("draw")
+    decs_stage("ui")
     render_ui()
     return

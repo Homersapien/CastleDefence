@@ -24,7 +24,6 @@ def spawn_wave(count: int)
             100.0,
             [[
                 MeleeWeapon
-                attack_range = 1.0,
                 damage = 25.0,
                 rate = 1.0
             ]])
@@ -34,7 +33,7 @@ def spawn_actor(position: float2; size: float; speed: float; health: float; var 
     let cell_coordinates = world_position_cell_coordinates(map, position)
     find_path_to_keep_once(map, cell_coordinates)
 
-    weapon.attack_period = weapon.rate > 0.0 ? 1.0 / weapon.rate : FLT_MAX
+    weapon.attack_period = rate_to_period(weapon.rate)
     
     var entity_id = create_entity <| @ ( eid, cmp )
         cmp |> set ( "eid", eid )

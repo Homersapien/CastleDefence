@@ -5,7 +5,7 @@ require misc
 require map
 require actor
 
-[decs_template]
+[decs_template(prefix = "movement_")]
 struct Movement
     velocity: float2
     max_speed: float
@@ -37,3 +37,10 @@ def move_actors(eid: EntityId; var actor: Actor; var movement: Movement)
         on_entity_left_cell(eid, movement.cell_index)
         movement.cell_index = current_cell_index
         on_entity_entered_cell(eid, current_cell_index)
+
+def stop_actor(actor_id: EntityId)
+    update_entity(actor_id) <| @ (eidd, cmp)
+        var position = float2(0.0, 0.0)
+        position = get(cmp, "actor_position", position)
+        set(cmp, "movement_target_position", position)
+        set(cmp, "movement_velocity", float2(0.0, 0.0))

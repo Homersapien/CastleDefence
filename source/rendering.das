@@ -23,6 +23,10 @@ let
     CURSOR_COLOR = 0xEEDD55
     BORDER_COLOR = 0x20000000
     BUILDING_GROUND_COLOR = 0x776655
+    FARM_SECOND_COLOR = 0xDDBB55
+    FARM_STRIPES_COUNT = 4
+    PROJECTILE_SIZE = 0.1
+    PROJECTILE_COLOR = 0x111111
 
 let GROUND_COLORS = [[uint[]
     0x33BB33;
@@ -126,12 +130,27 @@ def render_ui
 [decs(stage = draw)]
 def draw_building(actor: Actor; building: Building)
 
-    fill_rect(
+    let origin = float2(
         actor.position.x - map.cell_size * 0.5,
-        actor.position.y - map.cell_size * 0.5,
+        actor.position.y - map.cell_size * 0.5)
+
+    fill_rect(
+        origin.x,
+        origin.y,
         map.cell_size,
         map.cell_size,
         BUILDING_GROUND_COLOR)
+
+    if building.appearance == BuildingType Farm
+        let step = map.cell_size / float(FARM_STRIPES_COUNT)
+        let width = step * 0.5
+        for stripe_index in range(FARM_STRIPES_COUNT)
+            fill_rect(
+                origin.x + step * float(stripe_index) + width * 0.5,
+                origin.y,
+                width,
+                map.cell_size,
+                FARM_SECOND_COLOR)
 
 [decs(stage = draw)]
 def draw_melee_fighter(actor: Actor; weapon: MeleeWeapon)
@@ -149,6 +168,14 @@ def draw_melee_fighter(actor: Actor; weapon: MeleeWeapon)
         FACTION_COLORS[int(actor.faction)])
 
 [decs(stage = draw)]
+def draw_projectile(projectile: Projectile)
+    fill_circle(
+        projectile.position.x,
+        projectile.position.y,
+        PROJECTILE_SIZE,
+        PROJECTILE_COLOR)
+
+[decs(stage = ui)]
 def draw_health(actor: Actor; health: Health)
     if health.value < health.max_value
         
@@ -168,7 +195,7 @@ def draw_health(actor: Actor; health: Health)
             HEALTH_BAR_HEIGHT,
             FACTION_COLORS[int(actor.faction)])
 
-[decs(stage = draw)]
+[decs(stage = ui)]
 def draw_cursor(cursor: PlayerCursor)
     let cursor_origin = cell_world_origin(map, cursor.cell)
     let line_width = CURSOR_WIDTH * map.cell_size

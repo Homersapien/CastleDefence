@@ -14,6 +14,9 @@ let
     WALL_COST = 50
     ARCHER_TOWER_HEALTH = 200.0
     ARCHER_TOWER_COST = 250
+    ARCHER_TOWER_RANGE = 3.0
+    ARCHER_TOWER_RATE = 1.5
+    ARCHER_TOWER_DAMAGE = 35.0
 
 var player_gold: int
 
@@ -120,8 +123,15 @@ def build_archer_tower(cell: int2)
                 value = ARCHER_TOWER_HEALTH,
                 max_value = ARCHER_TOWER_HEALTH
             ]])
+            apply_decs_template(cmp, [[RangedWeapon
+                attack_range = ARCHER_TOWER_RANGE,
+                damage = ARCHER_TOWER_DAMAGE,
+                rate = ARCHER_TOWER_RATE,
+                attack_period = rate_to_period(ARCHER_TOWER_RATE)
+            ]])
 
         on_entity_entered_cell(entity_id, position)
 
+[export]
 def deconstruct_building(cell: int2)
     return
