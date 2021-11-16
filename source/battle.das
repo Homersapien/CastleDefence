@@ -165,8 +165,12 @@ def try_find_attackable_enemy_in_range(actor_id: EntityId; actor_faction: Factio
     return nearest_entity_id != INVALID_ENTITY_ID
 
 def kill_actor(entity_id: EntityId)
-    query(entity_id) <| $ (var attacked_actor: Actor; movement: Movement)
+    let movement_found = query(entity_id) <| $ (movement: Movement)
         on_entity_left_cell(entity_id, movement.cell_index)
+    if !movement_found
+        query(entity_id) <| $ (var actor: Actor)
+            let actor_cell = world_position_cell_coordinates(map, actor.position)
+            on_entity_left_cell(entity_id, cell_index(map, actor_cell))
     delete_entity(entity_id)
     on_actor_killed(entity_id)
 

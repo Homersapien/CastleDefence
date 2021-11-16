@@ -22,7 +22,7 @@ def restart_game
     for id in actors_ids
         delete_entity(id)
     generate_map(map)
-    spawn_keep(cell_world_center(map, map.keep_coordinates), 0.8, 500.0)
+    spawn_keep(cell_world_center(map, map.keep_coordinates))
     reset_enemy_spawning()
     initialize_input()
     reset_building()

@@ -10,9 +10,16 @@ require battle
 
 let
     FIRST_WAVE_DELAY = 5.0
-    WAVES_PERIOD = 20.0
-    ENEMIES_PER_WAVE = 7
+    WAVES_PERIOD = 30.0
+    ENEMIES_PER_WAVE = 5
     NEXT_WAVE_MULTIPLIER = 1.2
+
+let
+    KEEP_HEALTH = 500.0
+    ENEMY_WEAPON_DAMAGE = 10.0
+    ENEMY_WEAPON_RATE = 1.0
+    ENEMY_HEALTH = 100.0
+    ENEMY_WALKING_SPEED = 1.0
 
 [decs_template]
 struct EnemiesSpawner
@@ -50,12 +57,12 @@ def spawn_wave(count: int)
         spawn_actor(
             cell_world_center(map, cell),
             0.5,
-            1.0,
-            100.0,
+            ENEMY_WALKING_SPEED,
+            ENEMY_HEALTH,
             [[
                 MeleeWeapon
-                damage = 25.0,
-                rate = 1.0
+                damage = ENEMY_WEAPON_DAMAGE,
+                rate = ENEMY_WEAPON_RATE
             ]])
 
 def spawn_actor(position: float2; size: float; speed: float; health: float; var weapon: MeleeWeapon)
@@ -89,17 +96,17 @@ def spawn_actor(position: float2; size: float; speed: float; health: float; var 
         apply_decs_template(cmp, weapon)
     push(actors_ids, entity_id)
 
-def spawn_keep(position: float2; size: float; health: float)
+def spawn_keep(position: float2)
     var entity_id = create_entity <| @ ( eid, cmp )
         cmp |> set ("eid", eid)
         apply_decs_template(cmp, [[Actor
             position = position,
-            size = size,
+            size = 0.8,
             faction = Faction Defenders
         ]])
         apply_decs_template(cmp, [[Health
-            value = health,
-            max_value = health
+            value = KEEP_HEALTH,
+            max_value = KEEP_HEALTH
         ]])
     keep_id = entity_id
 

@@ -7,14 +7,14 @@ require actor
 require battle
 
 let
-    INITIAL_PLAYER_GOLD = 500
+    INITIAL_PLAYER_GOLD = 1000
     FARM_HEALTH = 20.0
     FARM_COST = 50
     FARM_GOLD_INCOME = 1
-    FARM_GOLD_INCOME_PERIOD = 3.0
-    WALL_HEALTH = 400.0
+    FARM_GOLD_INCOME_PERIOD = 2.0
+    WALL_HEALTH = 200.0
     WALL_COST = 50
-    ARCHER_TOWER_HEALTH = 200.0
+    ARCHER_TOWER_HEALTH = 100.0
     ARCHER_TOWER_COST = 250
     ARCHER_TOWER_RANGE = 4.0
     ARCHER_TOWER_RATE = 1.5
@@ -51,7 +51,9 @@ def reset_building
 
 def try_to_build(cell: int2; cost: int) : bool
     if !cell_is_occupied(cell)
-        return try_consume_gold(cost)
+        let ground_type = map.cells[cell_index(map, cell)].ground_type
+        if ground_type == GroundType Grass || ground_type == GroundType FelledForest
+            return try_consume_gold(cost)
     return false
 
 def try_consume_gold(amount: int) : bool

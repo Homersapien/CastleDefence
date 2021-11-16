@@ -25,6 +25,7 @@ let
     BUILDING_GROUND_COLOR = 0x776655
     FARM_SECOND_COLOR = 0xDDBB55
     FARM_STRIPES_COUNT = 4
+    WALL_COLOR = 0xAA9999
     PROJECTILE_SIZE = 0.1
     PROJECTILE_COLOR = 0x111111
 
@@ -139,7 +140,7 @@ def draw_building(actor: Actor; building: Building)
         origin.y,
         map.cell_size,
         map.cell_size,
-        BUILDING_GROUND_COLOR)
+        building.appearance == BuildingType Wall ? WALL_COLOR : BUILDING_GROUND_COLOR)
 
     if building.appearance == BuildingType Farm
         let step = map.cell_size / float(FARM_STRIPES_COUNT)
@@ -151,6 +152,18 @@ def draw_building(actor: Actor; building: Building)
                 width,
                 map.cell_size,
                 FARM_SECOND_COLOR)
+
+    elif building.appearance == BuildingType ArcherTower
+        fill_circle(
+            actor.position.x,
+            actor.position.y,
+            actor.size * 0.5 * 0.9,
+            FACTION_COLORS[int(actor.faction)])
+        fill_circle(
+            actor.position.x,
+            actor.position.y,
+            actor.size * 0.5 * 0.6,
+            WALL_COLOR)
 
 [decs(stage = draw)]
 def draw_melee_fighter(actor: Actor; weapon: MeleeWeapon)
