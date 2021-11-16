@@ -48,18 +48,20 @@ def deal_damage(hit_entity_id: EntityId; amount: float)
             
         var health = 0.0
         health = get(cmp, "health_value", health) // wat?
-        set(cmp, "health_value", max(health - amount , 0.0))
+        health = max(health - amount , 0.0)
+        set(cmp, "health_value", health)
         
         if health <= 0.0
             kill_actor(hit_entity_id)
 
 [decs(stage = fighting)]
 def fight_melee(eid: EntityId; var actor: Actor; var weapon: MeleeWeapon)
+    
+    weapon.time_since_last_attack += get_delta_time()
 
     if actor.attacked_entity_id != INVALID_ENTITY_ID
 
         // Do an attack if the time has come
-        weapon.time_since_last_attack += get_delta_time()
         if weapon.time_since_last_attack >= weapon.attack_period
 
             weapon.time_since_last_attack -= weapon.attack_period
@@ -75,15 +77,16 @@ def fight_melee(eid: EntityId; var actor: Actor; var weapon: MeleeWeapon)
             if !target_found
                 actor.attacked_entity_id = INVALID_ENTITY_ID
     else 
-        weapon.time_since_last_attack = 0.0
+        weapon.time_since_last_attack = min(weapon.time_since_last_attack, weapon.attack_period)
 
 [decs(stage = fighting)]
 def fight_ranged(eid: EntityId; var actor: Actor; var weapon: RangedWeapon)
 
+    weapon.time_since_last_attack += get_delta_time()
+
     if actor.attacked_entity_id != INVALID_ENTITY_ID
 
         // Do an attack if the time has come
-        weapon.time_since_last_attack += get_delta_time()
         if weapon.time_since_last_attack >= weapon.attack_period
 
             weapon.time_since_last_attack -= weapon.attack_period
@@ -98,7 +101,7 @@ def fight_ranged(eid: EntityId; var actor: Actor; var weapon: RangedWeapon)
                     target_id = actor.attacked_entity_id
                 ]])
     else 
-        weapon.time_since_last_attack = 0.0
+        weapon.time_since_last_attack = min(weapon.time_since_last_attack, weapon.attack_period)
 
 [decs(stage = fighting)]
 def update_projectile(eid: EntityId; var projectile: Projectile)
