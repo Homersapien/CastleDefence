@@ -8,6 +8,36 @@ require ai
 require movement
 require battle
 
+let
+    FIRST_WAVE_DELAY = 5.0
+    WAVES_PERIOD = 20.0
+    ENEMIES_PER_WAVE = 7
+    NEXT_WAVE_MULTIPLIER = 1.2
+
+[decs_template]
+struct EnemiesSpawner
+    waves_period: float
+    time_to_next_wave: float
+    enemies_per_wave: int
+    next_wave_multiplier: float
+
+def reset_enemy_spawning()
+    create_entity <| @ ( eid, cmp )
+        apply_decs_template(cmp, [[EnemiesSpawner
+            waves_period = WAVES_PERIOD,
+            time_to_next_wave = FIRST_WAVE_DELAY,
+            enemies_per_wave = ENEMIES_PER_WAVE,
+            next_wave_multiplier = NEXT_WAVE_MULTIPLIER
+        ]])
+
+[decs(stage = updating)]
+def update_enemy_spawning(var spawner: EnemiesSpawner)
+    spawner.time_to_next_wave -= get_delta_time();
+    if spawner.time_to_next_wave <= 0.0
+        spawner.time_to_next_wave += spawner.waves_period
+        spawn_wave(spawner.enemies_per_wave)
+        spawner.enemies_per_wave = roundi(float(spawner.enemies_per_wave) * spawner.next_wave_multiplier)
+
 def spawn_wave(count: int)
     for _ in range(count)
         var attempt = 0

@@ -10,11 +10,13 @@ let
     INITIAL_PLAYER_GOLD = 500
     FARM_HEALTH = 20.0
     FARM_COST = 50
-    WALL_HEALTH = 200.0
+    FARM_GOLD_INCOME = 1
+    FARM_GOLD_INCOME_PERIOD = 3.0
+    WALL_HEALTH = 400.0
     WALL_COST = 50
     ARCHER_TOWER_HEALTH = 200.0
     ARCHER_TOWER_COST = 250
-    ARCHER_TOWER_RANGE = 3.0
+    ARCHER_TOWER_RANGE = 4.0
     ARCHER_TOWER_RATE = 1.5
     ARCHER_TOWER_DAMAGE = 35.0
 
@@ -26,7 +28,7 @@ struct GoldIncome
     amount: int
     time_to_next_income: float
 
-[decs(stage = fighting)]
+[decs(stage = updating)]
 def fight_melee(var income: GoldIncome)
     income.time_to_next_income -= get_delta_time()
     if (income.time_to_next_income <= 0.0)
@@ -77,9 +79,9 @@ def build_farm(cell: int2)
                 max_value = FARM_HEALTH
             ]])
             apply_decs_template(cmp, [[GoldIncome
-                period = 5.0,
-                amount = 1,
-                time_to_next_income = 5.0
+                period = FARM_GOLD_INCOME_PERIOD,
+                amount = FARM_GOLD_INCOME,
+                time_to_next_income = FARM_GOLD_INCOME_PERIOD
             ]])
 
         on_entity_entered_cell(entity_id, position)

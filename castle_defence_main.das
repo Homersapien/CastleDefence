@@ -23,7 +23,7 @@ def restart_game
         delete_entity(id)
     generate_map(map)
     spawn_keep(cell_world_center(map, map.keep_coordinates), 0.8, 500.0)
-    spawn_wave(7)
+    reset_enemy_spawning()
     initialize_input()
     reset_building()
 
@@ -40,7 +40,7 @@ def act(delta_time: float)
         time_since_last_thinking -= THINKING_PERIOD
         decs_stage("thinking")
 
-    decs_stage("working")
+    decs_stage("updating")
     decs_stage("movement")
     decs_stage("fighting")
     
