@@ -12,6 +12,7 @@ require source/input
 [export]
 def initialize
     set_window_title("Castle Defence")
+    set_antialiasing(8)
     initialize_random()
     initialize_map(map, 40, 40, 1.0)
     restart_game()
