@@ -22,6 +22,7 @@ enum GroundType
 [export]
 struct Cell
     ground_type: GroundType = GroundType Grass
+    adjacent_cells_with_same_ground: int
     path_to_keep: array<int2>
     entitity_ids: array<EntityId>
 
@@ -69,6 +70,7 @@ def world_position_cell_coordinates(map: Map; world_position: float2) : int2
 
 def reset_cell(var cell: Cell)
     cell.ground_type = GroundType Grass
+    cell.adjacent_cells_with_same_ground = 0
 
 def place_keep(var map: Map)
     let padding = floori(float(min(map.width, map.height)) * KEEP_POSITION_NORMALIZED_PADDING)
@@ -106,6 +108,23 @@ def place_random_ground_of_type(var map: Map; ground_type: GroundType; amount: f
             clear_passageway(map, keep_coordinates, int2(passageway_direction.x, 0), ground_type)
         else
             clear_passageway(map, keep_coordinates, int2(0, passageway_direction.y), ground_type)
+
+    for x in range(1, map.width - 1)
+        for y in range(1, map.height - 1)
+            var cell& = map.cells[cell_index(map, int2(x, y))]
+            cell.adjacent_cells_with_same_ground = 0
+            count_same_adjacent_cells(map, cell, int2(x + 1, y + 0))
+            count_same_adjacent_cells(map, cell, int2(x + 0, y + 1))
+            count_same_adjacent_cells(map, cell, int2(x - 1, y - 0))
+            count_same_adjacent_cells(map, cell, int2(x - 0, y - 1))
+            count_same_adjacent_cells(map, cell, int2(x + 1, y - 1))
+            count_same_adjacent_cells(map, cell, int2(x - 1, y + 1))
+            count_same_adjacent_cells(map, cell, int2(x + 1, y + 1))
+            count_same_adjacent_cells(map, cell, int2(x - 1, y - 1))
+
+def count_same_adjacent_cells(map: Map; var cell: Cell; adjacent_coordinates: int2)
+    if map.cells[cell_index(map, adjacent_coordinates)].ground_type == cell.ground_type
+        ++cell.adjacent_cells_with_same_ground
 
 def clear_passageway(var map: Map; start; direction: int2; ground_type: GroundType)
     assert(direction != int2(0, 0))

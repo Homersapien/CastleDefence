@@ -39,6 +39,8 @@ let GROUND_COLORS = [[uint[]
     0x3355FF
 ]]
 
+let GROUND_SHADOW_STRENGTH = 0.07
+
 let FACTION_COLORS = [[uint[]
     0x3355FF;
     0xFF5533
@@ -80,13 +82,19 @@ def render_map(var map: Map)
             let cell_index = cell_index(map, x, y)
             let origin = cell_world_origin(map, int2(x, y))
             
-            if map.cells[cell_index].ground_type != GroundType Grass
+            let cell& = map.cells[cell_index]
+            if cell.ground_type != GroundType Grass
+               
+                var color = GROUND_COLORS[int(cell.ground_type)]
+                let shadow_factor = 1.0 - float(cell.adjacent_cells_with_same_ground) / 8.0
+                color = multiply_colors(color, make_color(1.0 - GROUND_SHADOW_STRENGTH * shadow_factor))
+               
                 fill_rect(
                     origin.x,
                     origin.y,
                     map.cell_size,
                     map.cell_size,
-                    GROUND_COLORS[int(map.cells[cell_index].ground_type)])
+                    color)
 
 [export]
 def render_ui
