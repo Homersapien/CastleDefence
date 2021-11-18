@@ -43,3 +43,8 @@ def move_to(from, to: float2; delta_time: float; speed: float)
         return from + (vector / distance) * min(delta_distance, distance)
     else
         return to
+
+def erase(var vector; item)
+    let index = find_index(vector, item)
+    if index >= 0
+        erase(vector, index)

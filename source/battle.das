@@ -178,5 +178,6 @@ def kill_actor(entity_id: EntityId)
     on_actor_killed(entity_id)
 
 def on_actor_killed(entity_id: EntityId)
+    erase(actors_ids, entity_id)
     if entity_id == keep_id
         on_defeat()

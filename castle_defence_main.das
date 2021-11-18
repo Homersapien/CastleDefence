@@ -22,6 +22,7 @@ def restart_game
     reset_game_result()
     for id in actors_ids
         delete_entity(id)
+    clear(actors_ids)
     generate_map(map)
     spawn_keep(cell_world_center(map, map.keep_coordinates))
     reset_enemy_spawning()

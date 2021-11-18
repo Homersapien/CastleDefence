@@ -7,12 +7,14 @@ require actor
 require ai
 require movement
 require battle
+require game_result
 
 let
     FIRST_WAVE_DELAY = 15.0
     WAVES_PERIOD = 30.0
     ENEMIES_PER_WAVE = 5
     NEXT_WAVE_MULTIPLIER = 1.3
+    WAVES_COUNT = 15
 
 let
     KEEP_HEALTH = 500.0
@@ -26,6 +28,7 @@ struct EnemiesSpawner
     waves_period: float
     time_to_next_wave: float
     enemies_per_wave: int
+    spawned_waves_count: int
     next_wave_multiplier: float
 
 def reset_enemy_spawning()
@@ -34,16 +37,24 @@ def reset_enemy_spawning()
             waves_period = WAVES_PERIOD,
             time_to_next_wave = FIRST_WAVE_DELAY,
             enemies_per_wave = ENEMIES_PER_WAVE,
+            spawned_waves_count = 0,
             next_wave_multiplier = NEXT_WAVE_MULTIPLIER
         ]])
 
 [decs(stage = updating)]
 def update_enemy_spawning(var spawner: EnemiesSpawner)
-    spawner.time_to_next_wave -= get_delta_time();
-    if spawner.time_to_next_wave <= 0.0
-        spawner.time_to_next_wave += spawner.waves_period
-        spawn_wave(spawner.enemies_per_wave)
-        spawner.enemies_per_wave = roundi(float(spawner.enemies_per_wave) * spawner.next_wave_multiplier)
+    
+    if spawner.spawned_waves_count < WAVES_COUNT
+        
+        spawner.time_to_next_wave -= get_delta_time();
+        if spawner.time_to_next_wave <= 0.0
+            spawner.time_to_next_wave += spawner.waves_period
+            spawn_wave(spawner.enemies_per_wave)
+            ++spawner.spawned_waves_count
+            spawner.enemies_per_wave = roundi(float(spawner.enemies_per_wave) * spawner.next_wave_multiplier)
+    
+    elif length(actors_ids) == 0 && game_result == GameResult None
+        on_victory()
 
 def spawn_wave(count: int)
     for _ in range(count)
@@ -54,7 +65,7 @@ def spawn_wave(count: int)
             ++attempt
             cell = random_border_cell_coordinates(map)
         
-        spawn_actor(
+        spawn_enemy(
             cell_world_center(map, cell),
             0.5,
             ENEMY_WALKING_SPEED,
@@ -65,7 +76,7 @@ def spawn_wave(count: int)
                 rate = ENEMY_WEAPON_RATE
             ]])
 
-def spawn_actor(position: float2; size: float; speed: float; health: float; var weapon: MeleeWeapon)
+def spawn_enemy(position: float2; size: float; speed: float; health: float; var weapon: MeleeWeapon)
     
     let cell_coordinates = world_position_cell_coordinates(map, position)
     find_path_to_keep_once(map, cell_coordinates)

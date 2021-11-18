@@ -130,26 +130,47 @@ def render_ui
             "[1] - Farm ({FARM_COST})\n[2] - Wall ({WALL_COST})\n[3] - Tower ({ARCHER_TOWER_COST})",
             INFO_COLOR)
         
-    else
-        // Show the game result if the game is over
+    elif game_result == GameResult Defeat
+
+        // Show the game result if the game is over (defeat)
         set_font_size(GAME_RESULT_FONT_SIZE)
-        let artificial_center_text_offset = int2(-60, -GAME_RESULT_FONT_SIZE / 2)
+        let artificial_center_text_offset = int2(-64, -GAME_RESULT_FONT_SIZE / 2)
         text_out(
             get_screen_width() / 2 + artificial_center_text_offset.x,
             get_screen_height() / 2 + artificial_center_text_offset.y,
             "DEFEAT",
             FACTION_COLORS[1])
 
+    elif game_result == GameResult Victory
+
+        // Show the game result if the game is over (victory)
+        set_font_size(GAME_RESULT_FONT_SIZE)
+        let artificial_center_text_offset = int2(-84, -GAME_RESULT_FONT_SIZE / 2)
+        text_out(
+            get_screen_width() / 2 + artificial_center_text_offset.x,
+            get_screen_height() / 2 + artificial_center_text_offset.y,
+            "VICTORY",
+            FACTION_COLORS[0])
+
 [decs(stage = ui)]
 def draw_enemy_spawner_info(spawner: EnemiesSpawner)
     
     if game_result == GameResult None
+        
         set_font_size(INFO_FONT_SIZE)   
+
         text_out(
             INFO_MARGIN,
             INFO_MARGIN + ENEMIES_SPAWNER_INFO_OFFSET_Y,
-            "Next Wave: {ceili(spawner.time_to_next_wave)}",
+            "Waves: {spawner.spawned_waves_count}/{WAVES_COUNT}",
             INFO_COLOR)
+
+        if spawner.spawned_waves_count < WAVES_COUNT
+            text_out(
+                INFO_MARGIN,
+                INFO_MARGIN + ENEMIES_SPAWNER_INFO_OFFSET_Y + 20,
+                "Next Wave: {ceili(spawner.time_to_next_wave)}",
+                INFO_COLOR)
 
 [decs(stage = draw)]
 def draw_building(actor: Actor; building: Building)
